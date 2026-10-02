@@ -4,22 +4,32 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Webflix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@600&family=Lora:ital@0;1&display=swap" rel="stylesheet">
   <style>
     :root {
       --bg: #0b0b0b;
       --fg: #f5f5f5;
       --muted: #a3a3a3;
       --accent: #e50914;
+      --panel: rgba(0, 0, 0, 0.75);
+      --paper: #fffaf0;
+      --ink: #3a2a1a;
+      --env: #c9a27a;
+      --env-dark: #a97f55;
+      --env-light: #dcbb95;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
     body {
       background: var(--bg);
       color: var(--fg);
       font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
+    [hidden] { display: none !important; }
+    .view { min-height: 100vh; display: flex; flex-direction: column; }
+
     header {
       padding: 18px 32px;
       display: flex;
@@ -35,82 +45,337 @@
       text-transform: uppercase;
       text-decoration: none;
     }
+    .link-btn {
+      background: none; border: 0; color: var(--muted);
+      font: inherit; cursor: pointer;
+    }
+    .link-btn:hover { color: var(--fg); }
+
+    /* ---------- Connexion ---------- */
+    #login-view {
+      background:
+        linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.85)),
+        radial-gradient(circle at 30% 20%, #4a0a0e, #0b0b0b 60%);
+    }
+    .login-wrap { flex: 1; display: grid; place-items: center; padding: 16px; }
+    .login-box {
+      width: 100%; max-width: 420px;
+      background: var(--panel);
+      border-radius: 8px;
+      padding: 48px 40px;
+    }
+    .login-box h1 { font-size: 2rem; margin-bottom: 28px; }
+    .login-box input {
+      display: block; width: 100%;
+      margin-bottom: 16px;
+      padding: 16px;
+      background: #333; color: var(--fg);
+      border: 1px solid transparent; border-radius: 4px;
+      font-size: 1rem;
+    }
+    .login-box input:focus { outline: none; border-color: var(--fg); }
+    .btn {
+      display: inline-block;
+      background: var(--accent); color: #fff;
+      border: 0; border-radius: 4px;
+      padding: 14px 20px;
+      font-size: 1rem; font-weight: 700;
+      cursor: pointer;
+    }
+    .btn:hover { filter: brightness(1.1); }
+    .login-box .btn { width: 100%; margin-top: 12px; }
+    .error { color: #e87c03; min-height: 1.4em; margin-top: 12px; font-size: .95rem; }
+
+    /* ---------- Lecteur ---------- */
     main {
-      flex: 1;
-      width: 100%;
-      max-width: 1200px;
-      margin: 0 auto;
-      padding: 16px 32px 40px;
+      flex: 1; width: 100%; max-width: 1200px;
+      margin: 0 auto; padding: 16px 32px 40px;
     }
     .player {
-      position: relative;
-      width: 100%;
+      position: relative; width: 100%;
       aspect-ratio: 16 / 9;
-      background: #000;
-      border-radius: 8px;
-      overflow: hidden;
+      background: #000; border-radius: 8px; overflow: hidden;
       box-shadow: 0 20px 60px rgba(229, 9, 20, 0.15);
     }
     .player > div, .player iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
+      position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
     }
     .unmute {
-      position: absolute;
-      bottom: 70px;
-      right: 20px;
-      z-index: 2;
-      background: var(--accent);
-      color: #fff;
-      border: 0;
-      border-radius: 4px;
+      position: absolute; bottom: 70px; right: 20px; z-index: 2;
       padding: 10px 16px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
     }
-    .unmute[hidden] { display: none; }
-    h1 { margin-top: 24px; font-size: 1.6rem; }
+    main h1 { margin-top: 24px; font-size: 1.6rem; }
     p.meta { margin-top: 8px; color: var(--muted); }
-    footer {
-      text-align: center;
-      padding: 20px;
-      color: var(--muted);
-      font-size: 0.85rem;
+
+    /* ---------- Pop-up ---------- */
+    .modal {
+      position: fixed; inset: 0; z-index: 10;
+      display: grid; place-items: center;
+      background: rgba(0,0,0,.8);
+      padding: 16px;
+      animation: fade .4s ease;
     }
+    .modal-box {
+      background: #181818; border-radius: 10px;
+      padding: 36px 32px; max-width: 420px; width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,.6);
+      animation: pop .4s cubic-bezier(.2,1.4,.4,1);
+    }
+    .modal-box h2 { font-size: 1.4rem; margin-bottom: 10px; }
+    .modal-box p { color: var(--muted); margin-bottom: 24px; }
+    @keyframes fade { from { opacity: 0; } }
+    @keyframes pop { from { transform: scale(.8); opacity: 0; } }
+
+    /* ---------- Enveloppe ---------- */
+    #letter-view {
+      background: radial-gradient(circle at 50% 30%, #3b1420, #120608 70%);
+      align-items: center; justify-content: center;
+      padding: 40px 16px;
+      overflow-x: hidden;
+    }
+    .hint {
+      font-family: "Dancing Script", cursive;
+      font-size: 2rem; text-align: center;
+      margin-bottom: 40px;
+      color: #ffd9e0;
+      transition: opacity .5s;
+    }
+    .opened .hint { opacity: 0; }
+
+    .envelope-wrap {
+      position: relative;
+      width: min(360px, 90vw);
+      aspect-ratio: 3 / 2;
+      cursor: pointer;
+      margin-top: 40px;
+      transition: transform .8s ease .2s, opacity .8s ease 2.6s;
+    }
+    .envelope-wrap:not(.open):hover { transform: translateY(-6px); }
+    .envelope-wrap.open { cursor: default; }
+    .envelope-wrap.done { opacity: 0; pointer-events: none; }
+
+    .env-back {
+      position: absolute; inset: 0;
+      background: var(--env-dark);
+      border-radius: 6px;
+    }
+    .env-letter {
+      position: absolute;
+      left: 6%; right: 6%; top: 8%; bottom: 8%;
+      background: var(--paper);
+      border-radius: 4px;
+      padding: 14px;
+      color: var(--ink);
+      font-family: "Dancing Script", cursive;
+      font-size: 1.3rem;
+      transition: transform 1s ease 1s;
+      z-index: 1;
+    }
+    .open .env-letter { transform: translateY(-65%); }
+    .env-front {
+      position: absolute; inset: 0; z-index: 2;
+      border-radius: 6px; overflow: hidden;
+      pointer-events: none;
+    }
+    .env-front::before, .env-front::after {
+      content: ""; position: absolute; bottom: 0; width: 0; height: 0;
+      border-style: solid;
+    }
+    /* rabats latéraux et du bas, dessinés avec des bordures */
+    .env-front::before {
+      left: 0;
+      border-width: calc(min(360px, 90vw) / 3) 0 calc(min(360px, 90vw) / 3) calc(min(360px, 90vw) / 2);
+      border-color: transparent transparent var(--env) var(--env);
+    }
+    .env-front::after {
+      right: 0;
+      border-width: calc(min(360px, 90vw) / 3) calc(min(360px, 90vw) / 2) calc(min(360px, 90vw) / 3) 0;
+      border-color: transparent var(--env-light) var(--env-light) transparent;
+    }
+    .env-flap {
+      position: absolute; top: 0; left: 0; z-index: 3;
+      width: 0; height: 0;
+      border-style: solid;
+      border-width: calc(min(360px, 90vw) / 2.6) calc(min(360px, 90vw) / 2) 0 calc(min(360px, 90vw) / 2);
+      border-color: var(--env-dark) transparent transparent transparent;
+      transform-origin: top;
+      transition: transform .8s ease, z-index 0s linear .4s;
+      filter: drop-shadow(0 2px 2px rgba(0,0,0,.2));
+    }
+    .open .env-flap { transform: rotateX(180deg); z-index: 0; }
+    .seal {
+      position: absolute; z-index: 4;
+      left: 50%; top: 38%;
+      transform: translate(-50%, -50%);
+      width: 52px; height: 52px; border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #ff4d6d, #a4001d);
+      display: grid; place-items: center;
+      font-size: 1.4rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,.35);
+      transition: opacity .3s, transform .3s;
+    }
+    .open .seal { opacity: 0; transform: translate(-50%, -50%) scale(1.6); }
+
+    /* Lettre dépliée */
+    .letter {
+      position: absolute;
+      width: min(640px, calc(100vw - 32px));
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 6px;
+      padding: 48px 44px;
+      box-shadow: 0 30px 80px rgba(0,0,0,.5);
+      font-family: "Lora", Georgia, serif;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      opacity: 0;
+      transform: translateY(40px) scale(.9);
+      pointer-events: none;
+      transition: opacity .9s ease, transform .9s ease;
+    }
+    .letter.show {
+      position: relative;
+      opacity: 1; transform: none; pointer-events: auto;
+    }
+    .letter h2 {
+      font-family: "Dancing Script", cursive;
+      font-size: 2.4rem; font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .letter p + p { margin-top: 1em; }
+
     @media (max-width: 600px) {
       header, main { padding-left: 16px; padding-right: 16px; }
       .logo { font-size: 1.5rem; }
-      .unmute { bottom: 60px; right: 10px; padding: 8px 12px; font-size: 0.9rem; }
+      .login-box { padding: 32px 20px; }
+      .unmute { bottom: 60px; right: 10px; padding: 8px 12px; font-size: .9rem; }
+      .hint { font-size: 1.6rem; }
+      .letter { padding: 32px 22px; font-size: 1rem; }
     }
   </style>
 </head>
 <body>
-  <header>
-    <a class="logo" href="./">Webflix</a>
-  </header>
 
-  <main>
-    <div class="player">
-      <div id="yt-player"></div>
-      <button class="unmute" id="unmute" hidden>🔊 Activer le son</button>
+  <!-- 1. Connexion -->
+  <section id="login-view" class="view">
+    <header><span class="logo">Webflix</span></header>
+    <div class="login-wrap">
+      <form class="login-box" id="login-form" autocomplete="off">
+        <h1>S'identifier</h1>
+        <input id="username" type="text" placeholder="Nom d'utilisateur" required>
+        <input id="password" type="password" placeholder="Mot de passe" required>
+        <button class="btn" type="submit">S'identifier</button>
+        <p class="error" id="login-error"></p>
+      </form>
     </div>
-    <h1>En lecture</h1>
-    <p class="meta">Lecture automatique depuis YouTube.</p>
-  </main>
+  </section>
 
-  <footer>© Webflix</footer>
+  <!-- 2. Lecteur vidéo -->
+  <section id="player-view" class="view" hidden>
+    <header>
+      <span class="logo">Webflix</span>
+      <button class="link-btn" id="logout">Se déconnecter</button>
+    </header>
+    <main>
+      <div class="player">
+        <div id="yt-player"></div>
+        <button class="btn unmute" id="unmute" hidden>🔊 Activer le son</button>
+      </div>
+      <h1>En lecture</h1>
+      <p class="meta">Lecture automatique depuis YouTube.</p>
+    </main>
+  </section>
+
+  <!-- 3. Pop-up après 15 minutes -->
+  <div class="modal" id="pause-modal" hidden>
+    <div class="modal-box">
+      <h2>Petite pause ✨</h2>
+      <p>Quelque chose t'attend…</p>
+      <button class="btn" id="continue">Cliquez pour continuer</button>
+    </div>
+  </div>
+
+  <!-- 4. Enveloppe et lettre -->
+  <section id="letter-view" class="view" hidden>
+    <p class="hint">Cliquez pour ouvrir l'enveloppe Hanita 💌</p>
+    <div class="envelope-wrap" id="envelope" role="button" tabindex="0" aria-label="Ouvrir l'enveloppe">
+      <div class="env-back"></div>
+      <div class="env-letter">Hanita</div>
+      <div class="env-front"></div>
+      <div class="env-flap"></div>
+      <div class="seal">❤</div>
+    </div>
+
+    <article class="letter" id="letter">
+      <h2>Bonjour Hanita,</h2>
+      <!-- ✍️ Contenu de la lettre : remplace les paragraphes ci-dessous -->
+      <p>…</p>
+    </article>
+  </section>
 
   <script>
     const VIDEO_ID = "hELAQdvfpqw";
-    const unmuteBtn = document.getElementById("unmute");
-    let player;
+    const USERNAME = "yvanpirs";
+    // Empreintes SHA-256 du mot de passe (avec et sans les points de suspension)
+    const PASSWORD_HASHES = [
+      "334c07f618aec43fcf814a26c2253c83df16d65805b07dfcad5073800d388b0c",
+      "fe42df1a70cb44751f4abd8c0deea7775578a1efd73ec8053ec4a2ee22584f01",
+    ];
+    // 15 minutes ; ajouter ?test à l'URL pour tester avec 10 secondes
+    const PAUSE_AFTER_MS = new URLSearchParams(location.search).has("test") ? 10_000 : 15 * 60_000;
 
-    // Appelée automatiquement par l'API IFrame de YouTube une fois chargée
-    function onYouTubeIframeAPIReady() {
+    const $ = (id) => document.getElementById(id);
+    const views = { login: $("login-view"), player: $("player-view"), letter: $("letter-view") };
+    let player, pauseTimer;
+
+    function store(key, value) {
+      try { value === null ? sessionStorage.removeItem(key) : sessionStorage.setItem(key, value); } catch {}
+    }
+    function read(key) {
+      try { return sessionStorage.getItem(key); } catch { return null; }
+    }
+
+    function show(name) {
+      for (const [key, el] of Object.entries(views)) el.hidden = key !== name;
+    }
+
+    async function sha256(text) {
+      const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+      return [...new Uint8Array(buf)].map((b) => b.toString(16).padStart(2, "0")).join("");
+    }
+
+    // ---------- Connexion ----------
+    $("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const user = $("username").value.trim();
+      const hash = await sha256($("password").value);
+      if (user === USERNAME && PASSWORD_HASHES.includes(hash)) {
+        $("login-error").textContent = "";
+        store("webflix-auth", "1");
+        store("webflix-start", String(Date.now()));
+        startPlayer();
+      } else {
+        $("login-error").textContent = "Nom d'utilisateur ou mot de passe incorrect.";
+      }
+    });
+
+    $("logout").addEventListener("click", () => {
+      store("webflix-auth", null);
+      store("webflix-start", null);
+      store("webflix-step", null);
+      location.reload();
+    });
+
+    // ---------- Lecteur ----------
+    function loadYouTubeApi() {
+      if (window.YT) return;
+      const s = document.createElement("script");
+      s.src = "https://www.youtube.com/iframe_api";
+      document.head.appendChild(s);
+    }
+
+    window.onYouTubeIframeAPIReady = () => {
       player = new YT.Player("yt-player", {
         videoId: VIDEO_ID,
         playerVars: { autoplay: 1, mute: 1, playsinline: 1, rel: 0, modestbranding: 1 },
@@ -118,20 +383,66 @@
           onReady: (e) => {
             e.target.playVideo();
             // Les navigateurs bloquent l'autoplay avec son : on démarre en muet
-            if (e.target.isMuted()) unmuteBtn.hidden = false;
+            if (e.target.isMuted()) $("unmute").hidden = false;
           },
         },
       });
-    }
+    };
 
-    unmuteBtn.addEventListener("click", () => {
+    $("unmute").addEventListener("click", () => {
       if (!player) return;
       player.unMute();
       player.setVolume(100);
       player.playVideo();
-      unmuteBtn.hidden = true;
+      $("unmute").hidden = true;
     });
+
+    function startPlayer() {
+      show("player");
+      loadYouTubeApi();
+      const start = Number(read("webflix-start")) || Date.now();
+      const remaining = Math.max(0, PAUSE_AFTER_MS - (Date.now() - start));
+      clearTimeout(pauseTimer);
+      pauseTimer = setTimeout(pauseAndPrompt, remaining);
+    }
+
+    function pauseAndPrompt() {
+      try { player && player.pauseVideo(); } catch {}
+      $("pause-modal").hidden = false;
+    }
+
+    $("continue").addEventListener("click", () => {
+      try { player && player.pauseVideo(); } catch {}
+      $("pause-modal").hidden = true;
+      store("webflix-step", "letter");
+      show("letter");
+    });
+
+    // ---------- Enveloppe ----------
+    function openEnvelope() {
+      const env = $("envelope");
+      if (env.classList.contains("open")) return;
+      env.classList.add("open");
+      views.letter.classList.add("opened");
+      // rabat qui s'ouvre → lettre qui sort → lettre qui se déplie
+      setTimeout(() => env.classList.add("done"), 2200);
+      setTimeout(() => {
+        env.hidden = true;
+        $("letter").classList.add("show");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }, 3200);
+    }
+    $("envelope").addEventListener("click", openEnvelope);
+    $("envelope").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openEnvelope(); }
+    });
+
+    // ---------- Démarrage ----------
+    if (read("webflix-auth") === "1") {
+      read("webflix-step") === "letter" ? show("letter") : startPlayer();
+    } else {
+      show("login");
+    }
   </script>
-  <script src="https://www.youtube.com/iframe_api"></script>
 </body>
 </html>
