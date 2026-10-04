@@ -265,6 +265,16 @@
       margin-bottom: 20px;
     }
     .letter p + p { margin-top: 1em; }
+    .letter p + p, .letter ul + p, .letter p + ul { margin-top: 1em; }
+    .letter .wishes { padding-left: 1.4em; list-style: none; }
+    .letter .wishes li { position: relative; }
+    .letter .wishes li + li { margin-top: .5em; }
+    .letter .wishes li::before { content: "♥"; position: absolute; left: -1.3em; color: #c2185b; }
+    .letter .final { margin-top: 1.6em; font-style: italic; font-size: 1.15em; text-align: center; }
+    .letter .signature {
+      margin-top: 1.4em; text-align: right;
+      font-family: "Dancing Script", cursive; font-size: 1.9rem; line-height: 1.3;
+    }
 
     @media (max-width: 600px) {
       header, main { padding-left: 16px; padding-right: 16px; }
@@ -353,8 +363,20 @@
 
     <article class="letter" id="letter">
       <h2>Bonjour Hanita,</h2>
-      <!-- ✍️ Contenu de la lettre : remplace les paragraphes ci-dessous -->
-      <p>…</p>
+      <p>Je t'écris cette lettre pour te faire une surprise, à ma façon. Il existe mille manières de rendre quelqu'un heureux une nuit comme celle-ci, mais j'ai voulu choisir la mienne… et j'espère de tout cœur qu'elle te plaira.</p>
+      <p>J'ai travaillé dessus pendant un mois, en secret, pour pouvoir te dire avant tout ceci : <strong>je t'aime</strong> ❤️‍🔥</p>
+      <p>Pourquoi une lettre&nbsp;? Parce que tu le mérites. Tu as rendu ma vie intense. Tu l'as rendue stressante parfois, triste aussi, et il t'est arrivé de me mettre en colère… mais surtout, tu m'as rendu heureux. J'aime passer du temps avec toi, et j'aime plus que tout te voir heureuse. C'est aussi pour ça que cette lettre existe.</p>
+      <p>J'ai remarqué combien tu admires les preuves d'amour que font les autres. Je l'avoue, je ne suis pas le plus romantique 💕 Mais cette nuit, j'espère que cette preuve-là dépassera toutes celles que tu as pu voir, parce qu'elle vient de moi et qu'elle est ma façon à moi de te le dire. Certains offrent des cadeaux pour rendre leur copine heureuse ; moi, j'ai voulu t'offrir ce moment, parce qu'il me ressemble et qu'il vient du cœur.</p>
+      <p>Avant de terminer, j'ai quelques petites choses à te demander&nbsp;:</p>
+      <ul class="wishes">
+        <li>Reste forte, comme tu l'es. Beaucoup de gens t'admirent, et j'en fais partie. Je suis fier d'être le copain de cette femme forte.</li>
+        <li>Sois compréhensive, et pense un peu plus à «&nbsp;nous&nbsp;» qu'à «&nbsp;toi&nbsp;».</li>
+        <li>Sois amoureuse, et ne doute jamais de moi.</li>
+      </ul>
+      <p>Je serai là pour toi. Je ne te dirai pas «&nbsp;toujours&nbsp;», parce que personne ne sait de quoi demain sera fait, et que chaque histoire a une fin. Alors je te demande simplement une chose&nbsp;: vivons à fond le moment présent, toi et moi. Et lorsque la fin arrivera, il ne nous restera que de beaux souvenirs. Nous ne serons pas tristes que ce soit fini, mais heureux que ce soit arrivé dans nos vies.</p>
+      <p>Alors à partir de ce soir, je veux qu'on vive notre histoire pleinement, sans personne pour nous déranger. Juste nous deux, heureux. 💞</p>
+      <p class="final">Et pour finir… regarde derrière toi, en haut du lit ❤️</p>
+      <p class="signature">Je t'aime,<br>Divno</p>
     </article>
   </section>
 
