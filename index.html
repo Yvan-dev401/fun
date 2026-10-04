@@ -11,7 +11,7 @@
       --bg: #0b0b0b;
       --fg: #f5f5f5;
       --muted: #a3a3a3;
-      --accent: #e50914;
+      --accent: #7c5cff;
       --panel: rgba(0, 0, 0, 0.75);
       --paper: #fffaf0;
       --ink: #3a2a1a;
@@ -39,10 +39,8 @@
     }
     .logo {
       color: var(--accent);
-      font-weight: 900;
-      font-size: 2rem;
-      letter-spacing: 2px;
-      text-transform: uppercase;
+      font-weight: 800;
+      font-size: 1.8rem;
       text-decoration: none;
     }
     .link-btn {
@@ -55,7 +53,7 @@
     #login-view {
       background:
         linear-gradient(rgba(0,0,0,.6), rgba(0,0,0,.85)),
-        radial-gradient(circle at 30% 20%, #4a0a0e, #0b0b0b 60%);
+        radial-gradient(circle at 30% 20%, #241a4d, #0b0b0b 60%);
     }
     .login-wrap { flex: 1; display: grid; place-items: center; padding: 16px; }
     .login-box {
@@ -64,7 +62,8 @@
       border-radius: 8px;
       padding: 48px 40px;
     }
-    .login-box h1 { font-size: 2rem; margin-bottom: 28px; }
+    .login-box h1 { font-size: 2rem; margin-bottom: 8px; }
+    .note { color: var(--muted); font-size: .9rem; margin-bottom: 24px; }
     .login-box input {
       display: block; width: 100%;
       margin-bottom: 16px;
@@ -84,7 +83,7 @@
     }
     .btn:hover { filter: brightness(1.1); }
     .login-box .btn { width: 100%; margin-top: 12px; }
-    .error { color: #e87c03; min-height: 1.4em; margin-top: 12px; font-size: .95rem; }
+    .error { color: #ff8a80; min-height: 1.4em; margin-top: 12px; font-size: .95rem; }
 
     /* ---------- Lecteur ---------- */
     main {
@@ -95,7 +94,7 @@
       position: relative; width: 100%;
       aspect-ratio: 16 / 9;
       background: #000; border-radius: 8px; overflow: hidden;
-      box-shadow: 0 20px 60px rgba(229, 9, 20, 0.15);
+      box-shadow: 0 20px 60px rgba(124, 92, 255, 0.18);
     }
     .player > div, .player iframe {
       position: absolute; inset: 0; width: 100%; height: 100%; border: 0;
@@ -104,8 +103,24 @@
       position: absolute; bottom: 70px; right: 20px; z-index: 2;
       padding: 10px 16px;
     }
-    main h1 { margin-top: 24px; font-size: 1.6rem; }
-    p.meta { margin-top: 8px; color: var(--muted); }
+    .desc h1 { margin-top: 24px; font-size: 1.5rem; line-height: 1.3; }
+    .stats {
+      display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 12px;
+      margin-top: 20px;
+    }
+    .stats div {
+      background: #1b1f27; border-radius: 14px;
+      padding: 14px 8px; text-align: center;
+    }
+    .stats strong { display: block; font-size: 1.3rem; }
+    .stats span { color: var(--muted); font-size: .9rem; }
+    .desc-body {
+      margin-top: 16px; background: #1b1f27; border-radius: 14px;
+      padding: 20px 22px; line-height: 1.6;
+    }
+    .desc-body h3 { font-size: 1rem; font-weight: 500; }
+    .desc-body p { color: #d4d4d4; }
+    .desc-body p + h3 { margin-top: 20px; }
 
     /* ---------- Pop-up ---------- */
     .modal {
@@ -124,12 +139,18 @@
     }
     .modal-box h2 { font-size: 1.4rem; margin-bottom: 10px; }
     .modal-box p { color: var(--muted); margin-bottom: 24px; }
+    .modal-box input {
+      display: block; width: 100%; margin-bottom: 16px; padding: 14px;
+      background: #333; color: var(--fg); color-scheme: dark;
+      border: 1px solid transparent; border-radius: 4px; font-size: 1rem;
+    }
+    .modal-box .error { margin: 12px 0 0; }
     @keyframes fade { from { opacity: 0; } }
     @keyframes pop { from { transform: scale(.8); opacity: 0; } }
 
     /* ---------- Enveloppe ---------- */
     #letter-view {
-      background: radial-gradient(circle at 50% 30%, #3b1420, #120608 70%);
+      background: radial-gradient(circle at 50% 30%, #1d2230, #08090c 70%);
       align-items: center; justify-content: center;
       padding: 40px 16px;
       overflow-x: hidden;
@@ -138,7 +159,7 @@
       font-family: "Dancing Script", cursive;
       font-size: 2rem; text-align: center;
       margin-bottom: 40px;
-      color: #ffd9e0;
+      color: #e8e2d6;
       transition: opacity .5s;
     }
     .opened .hint { opacity: 0; }
@@ -209,7 +230,7 @@
       left: 50%; top: 38%;
       transform: translate(-50%, -50%);
       width: 52px; height: 52px; border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #ff4d6d, #a4001d);
+      background: radial-gradient(circle at 35% 35%, #6b6b6b, #2b2b2b);
       display: grid; place-items: center;
       font-size: 1.4rem;
       box-shadow: 0 3px 8px rgba(0,0,0,.35);
@@ -262,10 +283,11 @@
     <header><span class="logo">Webflix</span></header>
     <div class="login-wrap">
       <form class="login-box" id="login-form" autocomplete="off">
-        <h1>S'identifier</h1>
+        <h1>Accès privé</h1>
+        <p class="note">Site de test personnel — aucun rapport avec un service de streaming.</p>
         <input id="username" type="text" placeholder="Nom d'utilisateur" required>
         <input id="password" type="password" placeholder="Mot de passe" required>
-        <button class="btn" type="submit">S'identifier</button>
+        <button class="btn" type="submit">Entrer</button>
         <p class="error" id="login-error"></p>
       </form>
     </div>
@@ -282,29 +304,51 @@
         <div id="yt-player"></div>
         <button class="btn unmute" id="unmute" hidden>🔊 Activer le son</button>
       </div>
-      <h1>En lecture</h1>
-      <p class="meta">Lecture automatique depuis YouTube.</p>
+      <section class="desc">
+        <h1>Deux sœurs piégées sous la bâche d'une piscine publique | Survival | Thriller</h1>
+        <div class="stats">
+          <div><strong>18K</strong><span>Likes</span></div>
+          <div><strong>2,697,612</strong><span>Views</span></div>
+          <div><strong>Sep 9</strong><span>2026</span></div>
+        </div>
+        <div class="desc-body">
+          <h3>►SYNOPSIS</h3>
+          <p>Un grand complexe aquatique en périphérie, un vendredi soir de fin d'été. Les dernières familles plient leurs serviettes tandis que deux sœurs, Bree et Jonna, restent après la fermeture pour terminer une conversation qu'elles ont trop longtemps repoussée. Elles ont grandi ensemble, se sont éloignées, et Bree, allergique sévère aux arachides, ne se déplace jamais sans son epipen. Alors qu'elles nagent encore dans le bassin, la vieille employée en fin de service, Clara, ferme les lieux à la va-vite et déroule au-dessus des filles la lourde bâche rigide qui protège la piscine pour tout le week-end. Impossible de la soulever de l'intérieur. Aucun téléphone, aucune vitre à briser, aucun signal audible depuis l'extérieur. Le complexe ne rouvrira que lundi matin. Et quand Clara, en repartant, aperçoit la bague en diamant que Bree a laissée sur le bord, elle décide de ne surtout rien dire à personne.</p>
+          <h3>►ACTEURS</h3>
+          <p>Nora-Jane Noone, Alexandra Park, Diane Farr, Christian Kain Blackburn, Tobin Bell, Dogen Eyeler, Charles Duncan McGowan, Matthew Ryan Michaels, Donald Prince</p>
+        </div>
+      </section>
     </main>
   </section>
 
   <!-- 3. Pop-up après 15 minutes -->
   <div class="modal" id="pause-modal" hidden>
     <div class="modal-box">
-      <h2>Petite pause ✨</h2>
-      <p>Quelque chose t'attend…</p>
+      <h2>Un instant…</h2>
+      <p>J'ai un message pour l'un d'entre vous, plus précisément pour Hanita.</p>
       <button class="btn" id="continue">Cliquez pour continuer</button>
     </div>
   </div>
 
   <!-- 4. Enveloppe et lettre -->
   <section id="letter-view" class="view" hidden>
-    <p class="hint">Cliquez pour ouvrir l'enveloppe Hanita 💌</p>
+    <div class="modal" id="bday-modal">
+      <form class="modal-box" id="bday-form">
+        <h2>Une dernière vérification</h2>
+        <p>Entre ta date d'anniversaire pour accéder à l'enveloppe.</p>
+        <input id="bday" type="date" required>
+        <button class="btn" type="submit">Valider</button>
+        <p class="error" id="bday-error"></p>
+      </form>
+    </div>
+
+    <p class="hint">Cliquez pour ouvrir l'enveloppe Hanita</p>
     <div class="envelope-wrap" id="envelope" role="button" tabindex="0" aria-label="Ouvrir l'enveloppe">
       <div class="env-back"></div>
       <div class="env-letter">Hanita</div>
       <div class="env-front"></div>
       <div class="env-flap"></div>
-      <div class="seal">❤</div>
+      <div class="seal"></div>
     </div>
 
     <article class="letter" id="letter">
@@ -322,6 +366,8 @@
       "334c07f618aec43fcf814a26c2253c83df16d65805b07dfcad5073800d388b0c",
       "fe42df1a70cb44751f4abd8c0deea7775578a1efd73ec8053ec4a2ee22584f01",
     ];
+    // Empreinte SHA-256 de la date d'anniversaire (format AAAA-MM-JJ)
+    const BIRTHDAY_HASH = "105cf7db8ee4932a15834ef554901c76963c889db4e42c478e25e72e17435414";
     // 15 minutes ; ajouter ?test à l'URL pour tester avec 10 secondes
     const PAUSE_AFTER_MS = new URLSearchParams(location.search).has("test") ? 10_000 : 15 * 60_000;
 
@@ -364,6 +410,7 @@
       store("webflix-auth", null);
       store("webflix-start", null);
       store("webflix-step", null);
+      store("webflix-bday", null);
       location.reload();
     });
 
@@ -415,7 +462,23 @@
       try { player && player.pauseVideo(); } catch {}
       $("pause-modal").hidden = true;
       store("webflix-step", "letter");
+      showLetter();
+    });
+
+    // ---------- Date d'anniversaire ----------
+    function showLetter() {
       show("letter");
+      $("bday-modal").hidden = read("webflix-bday") === "1";
+    }
+
+    $("bday-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (await sha256($("bday").value) === BIRTHDAY_HASH) {
+        store("webflix-bday", "1");
+        $("bday-modal").hidden = true;
+      } else {
+        $("bday-error").textContent = "Ce n'est pas la bonne date.";
+      }
     });
 
     // ---------- Enveloppe ----------
@@ -439,7 +502,7 @@
 
     // ---------- Démarrage ----------
     if (read("webflix-auth") === "1") {
-      read("webflix-step") === "letter" ? show("letter") : startPlayer();
+      read("webflix-step") === "letter" ? showLetter() : startPlayer();
     } else {
       show("login");
     }
