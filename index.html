@@ -139,12 +139,34 @@
     }
     .modal-box h2 { font-size: 1.4rem; margin-bottom: 10px; }
     .modal-box p { color: var(--muted); margin-bottom: 24px; }
-    .modal-box input {
-      display: block; width: 100%; margin-bottom: 16px; padding: 14px;
-      background: #333; color: var(--fg); color-scheme: dark;
-      border: 1px solid transparent; border-radius: 4px; font-size: 1rem;
+    .date-label {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-size: .95rem; font-weight: 600; margin-bottom: 12px;
     }
+    .date-fields {
+      display: grid; grid-template-columns: 1fr 1.6fr 1.2fr; gap: 8px;
+      margin-bottom: 20px;
+    }
+    .date-fields label {
+      display: flex; flex-direction: column; gap: 6px;
+      font-size: .75rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: .05em;
+    }
+    .date-fields select {
+      appearance: none; -webkit-appearance: none;
+      width: 100%; min-width: 0;
+      padding: 12px 26px 12px 10px;
+      background: #2a2a2a url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%23a3a3a3' stroke-width='2'/%3E%3C/svg%3E") no-repeat right 10px center;
+      color: var(--fg); color-scheme: dark;
+      border: 1px solid #444; border-radius: 8px;
+      font: inherit; font-size: 1rem; text-align: center; text-align-last: center;
+      cursor: pointer;
+    }
+    .date-fields select:focus { outline: none; border-color: var(--accent); }
+    .date-fields select:invalid { color: var(--muted); }
+    .modal-box .btn { width: 100%; }
     .modal-box .error { margin: 12px 0 0; }
+    .modal-box .error:empty { display: none; }
     @keyframes fade { from { opacity: 0; } }
     @keyframes pop { from { transform: scale(.8); opacity: 0; } }
 
@@ -346,7 +368,12 @@
       <form class="modal-box" id="bday-form">
         <h2>Une dernière vérification</h2>
         <p>Entre ta date d'anniversaire pour accéder à l'enveloppe.</p>
-        <input id="bday" type="date" required>
+        <div class="date-label"><span aria-hidden="true">📅</span> Date d'anniversaire</div>
+        <div class="date-fields">
+          <label>Jour<select id="bday-day" required><option value="">JJ</option></select></label>
+          <label>Mois<select id="bday-month" required><option value="">Mois</option></select></label>
+          <label>Année<select id="bday-year" required><option value="">AAAA</option></select></label>
+        </div>
         <button class="btn" type="submit">Valider</button>
         <p class="error" id="bday-error"></p>
       </form>
@@ -493,9 +520,18 @@
       $("bday-modal").hidden = read("webflix-bday") === "1";
     }
 
+    // Listes déroulantes jour / mois / année
+    const MONTHS = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
+    const addOptions = (select, items) => select.append(...items.map(([value, label]) => new Option(label, value)));
+    addOptions($("bday-day"), Array.from({ length: 31 }, (_, i) => [String(i + 1).padStart(2, "0"), String(i + 1)]));
+    addOptions($("bday-month"), MONTHS.map((m, i) => [String(i + 1).padStart(2, "0"), m]));
+    const thisYear = new Date().getFullYear();
+    addOptions($("bday-year"), Array.from({ length: 90 }, (_, i) => [String(thisYear - i), String(thisYear - i)]));
+
     $("bday-form").addEventListener("submit", async (e) => {
       e.preventDefault();
-      if (await sha256($("bday").value) === BIRTHDAY_HASH) {
+      const date = `${$("bday-year").value}-${$("bday-month").value}-${$("bday-day").value}`;
+      if (await sha256(date) === BIRTHDAY_HASH) {
         store("webflix-bday", "1");
         $("bday-modal").hidden = true;
       } else {
