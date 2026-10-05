@@ -103,6 +103,51 @@
       position: absolute; bottom: 70px; right: 20px; z-index: 2;
       padding: 10px 16px;
     }
+    .ic { width: 1.1em; height: 1.1em; vertical-align: -0.18em; flex-shrink: 0; }
+    .ic-heart { color: #d81b60; }
+    .ic-flame { color: #ff7a1a; margin-right: -2px; }
+    .ic-small { width: .8em; height: .8em; margin-left: -4px; vertical-align: 0; }
+    .link-btn, .btn, .date-label { display: inline-flex; align-items: center; gap: 8px; justify-content: center; }
+    .date-label { display: flex; }
+
+    .catalog { margin-top: 36px; }
+    .catalog h2 { font-size: 1.25rem; margin-bottom: 14px; }
+    .grid {
+      display: grid; gap: 16px;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    }
+    .card {
+      background: none; border: 0; padding: 0; text-align: left;
+      color: inherit; font: inherit; cursor: pointer;
+    }
+    .thumb {
+      position: relative; display: block; aspect-ratio: 16 / 9;
+      border-radius: 8px; overflow: hidden; background: #1b1f27;
+    }
+    .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform .3s; }
+    .card:hover .thumb img { transform: scale(1.05); }
+    .thumb .play {
+      position: absolute; inset: 0; display: grid; place-items: center;
+      background: rgba(0,0,0,.35); opacity: 0; transition: opacity .2s;
+    }
+    .thumb .play .ic { width: 44px; height: 44px; color: #fff; filter: drop-shadow(0 2px 6px rgba(0,0,0,.5)); }
+    .card:hover .play, .card:focus-visible .play { opacity: 1; }
+    .badge {
+      position: absolute; left: 8px; top: 8px;
+      background: var(--accent); color: #fff;
+      font-size: .7rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em;
+      padding: 3px 8px; border-radius: 4px;
+    }
+    .card-title {
+      margin-top: 8px; font-size: .95rem; font-weight: 600; line-height: 1.35;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-meta { margin-top: 2px; font-size: .8rem; color: var(--muted); }
+    .card[aria-current="true"] .thumb { outline: 2px solid var(--accent); outline-offset: 2px; }
+    @media (max-width: 600px) {
+      .grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .card-title { font-size: .85rem; }
+    }
     .desc h1 { margin-top: 24px; font-size: 1.5rem; line-height: 1.3; }
     .stats {
       display: grid; grid-template-columns: 1fr 1.4fr 1fr; gap: 12px;
@@ -291,7 +336,7 @@
     .letter .wishes { padding-left: 1.4em; list-style: none; }
     .letter .wishes li { position: relative; }
     .letter .wishes li + li { margin-top: .5em; }
-    .letter .wishes li::before { content: "♥"; position: absolute; left: -1.3em; color: #c2185b; }
+    .letter .wishes li::before { content: ""; position: absolute; left: -1.4em; top: .45em; width: .9em; height: .9em; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23c2185b' d='M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z'/%3E%3C/svg%3E") no-repeat center / contain; }
     .letter .final { margin-top: 1.6em; font-style: italic; font-size: 1.15em; text-align: center; }
     .letter .signature {
       margin-top: 1.4em; text-align: right;
@@ -309,6 +354,17 @@
   </style>
 </head>
 <body>
+  <!-- Icônes SVG (style Lucide) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="i-volume" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></symbol>
+      <symbol id="i-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></symbol>
+      <symbol id="i-heart" viewBox="0 0 24 24" fill="currentColor"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></symbol>
+      <symbol id="i-flame" viewBox="0 0 24 24" fill="currentColor"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></symbol>
+      <symbol id="i-play" viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15a1 1 0 0 0 1.5.86l12.5-7.5a1 1 0 0 0 0-1.72L8.5 3.64A1 1 0 0 0 7 4.5z"/></symbol>
+      <symbol id="i-logout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5M21 12H9"/></symbol>
+    </defs>
+  </svg>
 
   <!-- 1. Connexion -->
   <section id="login-view" class="view">
@@ -329,26 +385,22 @@
   <section id="player-view" class="view" hidden>
     <header>
       <span class="logo">Webflix</span>
-      <button class="link-btn" id="logout">Se déconnecter</button>
+      <button class="link-btn" id="logout"><svg class="ic" aria-hidden="true"><use href="#i-logout"/></svg> Se déconnecter</button>
     </header>
     <main>
       <div class="player">
         <div id="yt-player"></div>
-        <button class="btn unmute" id="unmute" hidden>🔊 Activer le son</button>
+        <button class="btn unmute" id="unmute" hidden><svg class="ic" aria-hidden="true"><use href="#i-volume"/></svg> Activer le son</button>
       </div>
       <section class="desc">
-        <h1>Deux sœurs piégées sous la bâche d'une piscine publique | Survival | Thriller</h1>
-        <div class="stats">
-          <div><strong>18K</strong><span>Likes</span></div>
-          <div><strong>2,697,612</strong><span>Views</span></div>
-          <div><strong>Sep 9</strong><span>2026</span></div>
-        </div>
-        <div class="desc-body">
-          <h3>►SYNOPSIS</h3>
-          <p>Un grand complexe aquatique en périphérie, un vendredi soir de fin d'été. Les dernières familles plient leurs serviettes tandis que deux sœurs, Bree et Jonna, restent après la fermeture pour terminer une conversation qu'elles ont trop longtemps repoussée. Elles ont grandi ensemble, se sont éloignées, et Bree, allergique sévère aux arachides, ne se déplace jamais sans son epipen. Alors qu'elles nagent encore dans le bassin, la vieille employée en fin de service, Clara, ferme les lieux à la va-vite et déroule au-dessus des filles la lourde bâche rigide qui protège la piscine pour tout le week-end. Impossible de la soulever de l'intérieur. Aucun téléphone, aucune vitre à briser, aucun signal audible depuis l'extérieur. Le complexe ne rouvrira que lundi matin. Et quand Clara, en repartant, aperçoit la bague en diamant que Bree a laissée sur le bord, elle décide de ne surtout rien dire à personne.</p>
-          <h3>►ACTEURS</h3>
-          <p>Nora-Jane Noone, Alexandra Park, Diane Farr, Christian Kain Blackburn, Tobin Bell, Dogen Eyeler, Charles Duncan McGowan, Matthew Ryan Michaels, Donald Prince</p>
-        </div>
+        <h1 id="video-title"></h1>
+        <div class="stats" id="video-stats"></div>
+        <div class="desc-body" id="video-desc"></div>
+      </section>
+
+      <section class="catalog">
+        <h2>Plus de vidéos</h2>
+        <div class="grid" id="catalog"></div>
       </section>
     </main>
   </section>
@@ -368,7 +420,7 @@
       <form class="modal-box" id="bday-form">
         <h2>Une dernière vérification</h2>
         <p>Entre ta date d'anniversaire pour accéder à l'enveloppe.</p>
-        <div class="date-label"><span aria-hidden="true">📅</span> Date d'anniversaire</div>
+        <div class="date-label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Date d'anniversaire</div>
         <div class="date-fields">
           <label>Jour<select id="bday-day" required><option value="">JJ</option></select></label>
           <label>Mois<select id="bday-month" required><option value="">Mois</option></select></label>
@@ -391,9 +443,9 @@
     <article class="letter" id="letter">
       <h2>Bonjour Hanita,</h2>
       <p>Je t'écris cette lettre pour te faire une surprise, à ma façon. Il existe mille manières de rendre quelqu'un heureux une nuit comme celle-ci, mais j'ai voulu choisir la mienne… et j'espère de tout cœur qu'elle te plaira.</p>
-      <p>J'ai travaillé dessus pendant un mois, en secret, pour pouvoir te dire avant tout ceci : <strong>je t'aime</strong> ❤️‍🔥</p>
+      <p>J'ai travaillé dessus pendant un mois, en secret, pour pouvoir te dire avant tout ceci : <span style="white-space:nowrap"><strong>je t'aime</strong> <svg class="ic ic-flame" aria-hidden="true"><use href="#i-flame"/></svg><svg class="ic ic-heart" aria-hidden="true"><use href="#i-heart"/></svg></span></p>
       <p>Pourquoi une lettre&nbsp;? Parce que tu le mérites. Tu as rendu ma vie intense. Tu l'as rendue stressante parfois, triste aussi, et il t'est arrivé de me mettre en colère… mais surtout, tu m'as rendu heureux. J'aime passer du temps avec toi, et j'aime plus que tout te voir heureuse. C'est aussi pour ça que cette lettre existe.</p>
-      <p>J'ai remarqué combien tu admires les preuves d'amour que font les autres. Je l'avoue, je ne suis pas le plus romantique 💕 Mais cette nuit, j'espère que cette preuve-là dépassera toutes celles que tu as pu voir, parce qu'elle vient de moi et qu'elle est ma façon à moi de te le dire. Certains offrent des cadeaux pour rendre leur copine heureuse ; moi, j'ai voulu t'offrir ce moment, parce qu'il me ressemble et qu'il vient du cœur.</p>
+      <p>J'ai remarqué combien tu admires les preuves d'amour que font les autres. Je l'avoue, je ne suis pas le plus romantique <svg class="ic ic-heart" aria-hidden="true"><use href="#i-heart"/></svg> Mais cette nuit, j'espère que cette preuve-là dépassera toutes celles que tu as pu voir, parce qu'elle vient de moi et qu'elle est ma façon à moi de te le dire. Certains offrent des cadeaux pour rendre leur copine heureuse ; moi, j'ai voulu t'offrir ce moment, parce qu'il me ressemble et qu'il vient du cœur.</p>
       <p>Avant de terminer, j'ai quelques petites choses à te demander&nbsp;:</p>
       <ul class="wishes">
         <li>Reste forte, comme tu l'es. Beaucoup de gens t'admirent, et j'en fais partie. Je suis fier d'être le copain de cette femme forte.</li>
@@ -401,14 +453,29 @@
         <li>Sois amoureuse, et ne doute jamais de moi.</li>
       </ul>
       <p>Je serai là pour toi. Je ne te dirai pas «&nbsp;toujours&nbsp;», parce que personne ne sait de quoi demain sera fait, et que chaque histoire a une fin. Alors je te demande simplement une chose&nbsp;: vivons à fond le moment présent, toi et moi. Et lorsque la fin arrivera, il ne nous restera que de beaux souvenirs. Nous ne serons pas tristes que ce soit fini, mais heureux que ce soit arrivé dans nos vies.</p>
-      <p>Alors à partir de ce soir, je veux qu'on vive notre histoire pleinement, sans personne pour nous déranger. Juste nous deux, heureux. 💞</p>
-      <p class="final">Et pour finir… regarde derrière toi, en haut du lit ❤️</p>
+      <p>Alors à partir de ce soir, je veux qu'on vive notre histoire pleinement, sans personne pour nous déranger. Juste nous deux, heureux. <svg class="ic ic-heart" aria-hidden="true"><use href="#i-heart"/></svg><svg class="ic ic-heart ic-small" aria-hidden="true"><use href="#i-heart"/></svg></p>
+      <p class="final">Et pour finir… regarde derrière toi, en haut du lit <svg class="ic ic-heart" aria-hidden="true"><use href="#i-heart"/></svg></p>
       <p class="signature">Je t'aime,<br>Divno</p>
     </article>
   </section>
 
   <script>
-    const VIDEO_ID = "hELAQdvfpqw";
+    // Catalogue : le premier est lu au démarrage. Titre/chaîne des autres chargés depuis YouTube.
+    const VIDEOS = [
+      {
+        id: "hELAQdvfpqw",
+        title: "Deux sœurs piégées sous la bâche d'une piscine publique | Survival | Thriller",
+        stats: [["18K", "Likes"], ["2,697,612", "Views"], ["Sep 9", "2026"]],
+        sections: [
+          ["SYNOPSIS", "Un grand complexe aquatique en périphérie, un vendredi soir de fin d'été. Les dernières familles plient leurs serviettes tandis que deux sœurs, Bree et Jonna, restent après la fermeture pour terminer une conversation qu'elles ont trop longtemps repoussée. Elles ont grandi ensemble, se sont éloignées, et Bree, allergique sévère aux arachides, ne se déplace jamais sans son epipen. Alors qu'elles nagent encore dans le bassin, la vieille employée en fin de service, Clara, ferme les lieux à la va-vite et déroule au-dessus des filles la lourde bâche rigide qui protège la piscine pour tout le week-end. Impossible de la soulever de l'intérieur. Aucun téléphone, aucune vitre à briser, aucun signal audible depuis l'extérieur. Le complexe ne rouvrira que lundi matin. Et quand Clara, en repartant, aperçoit la bague en diamant que Bree a laissée sur le bord, elle décide de ne surtout rien dire à personne."],
+          ["ACTEURS", "Nora-Jane Noone, Alexandra Park, Diane Farr, Christian Kain Blackburn, Tobin Bell, Dogen Eyeler, Charles Duncan McGowan, Matthew Ryan Michaels, Donald Prince"],
+        ],
+      },
+      { id: "-GTx5ppBvII" },
+      { id: "so_ljIXMhNg" },
+      { id: "ovNNI-9oT8M" },
+    ];
+    let current = VIDEOS[0];
     const USERNAME = "yvanpirs";
     // Empreintes SHA-256 du mot de passe (avec et sans les points de suspension)
     const PASSWORD_HASHES = [
@@ -473,13 +540,23 @@
 
     window.onYouTubeIframeAPIReady = () => {
       player = new YT.Player("yt-player", {
-        videoId: VIDEO_ID,
+        videoId: current.id,
         playerVars: { autoplay: 1, mute: 1, playsinline: 1, rel: 0, modestbranding: 1 },
         events: {
           onReady: (e) => {
             e.target.playVideo();
             // Les navigateurs bloquent l'autoplay avec son : on démarre en muet
             if (e.target.isMuted()) $("unmute").hidden = false;
+          },
+          // Récupère le titre depuis le lecteur si on ne l'a pas encore
+          onStateChange: () => {
+            const data = player.getVideoData && player.getVideoData();
+            if (data && data.video_id === current.id && data.title && !current.title) {
+              current.title = data.title;
+              current.author = current.author || data.author;
+              renderDescription();
+              renderCatalog();
+            }
           },
         },
       });
@@ -493,8 +570,66 @@
       $("unmute").hidden = true;
     });
 
+    // ---------- Catalogue ----------
+    const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+    function renderDescription() {
+      const v = current;
+      $("video-title").textContent = v.title || "Chargement…";
+      $("video-stats").hidden = !v.stats;
+      $("video-stats").innerHTML = (v.stats || [])
+        .map(([n, l]) => `<div><strong>${esc(n)}</strong><span>${esc(l)}</span></div>`).join("");
+      const sections = v.sections || [
+        ["CHAÎNE", v.author || "YouTube"],
+        ["À PROPOS", "Disponible en streaming sur Webflix. Bonne séance !"],
+      ];
+      $("video-desc").innerHTML = sections
+        .map(([h, t]) => `<h3>►${esc(h)}</h3><p>${esc(t)}</p>`).join("");
+    }
+
+    function renderCatalog() {
+      $("catalog").innerHTML = VIDEOS.map((v, i) => `
+        <button class="card" data-index="${i}" aria-current="${v === current}">
+          <span class="thumb">
+            <img src="https://i.ytimg.com/vi/${v.id}/hqdefault.jpg" alt="" loading="lazy" onerror="this.style.visibility='hidden'">
+            <span class="play"><svg class="ic" aria-hidden="true"><use href="#i-play"/></svg></span>
+            ${v === current ? '<span class="badge">En lecture</span>' : ""}
+          </span>
+          <span class="card-title">${esc(v.title || "Chargement…")}</span>
+          <span class="card-meta">${esc(v.author || "Webflix")}</span>
+        </button>`).join("");
+    }
+
+    $("catalog").addEventListener("click", (e) => {
+      const card = e.target.closest(".card");
+      if (!card) return;
+      current = VIDEOS[Number(card.dataset.index)];
+      if (player && player.loadVideoById) player.loadVideoById(current.id);
+      renderDescription();
+      renderCatalog();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    // Titre et chaîne via oEmbed (noembed autorise les requêtes depuis le navigateur)
+    function loadVideoInfo() {
+      VIDEOS.filter((v) => !v.title).forEach(async (v) => {
+        try {
+          const url = `https://noembed.com/embed?url=${encodeURIComponent("https://www.youtube.com/watch?v=" + v.id)}`;
+          const data = await (await fetch(url)).json();
+          if (data.title) v.title = data.title;
+          if (data.author_name) v.author = data.author_name;
+        } catch {}
+        if (!v.title) v.title = "Vidéo à découvrir";
+        renderCatalog();
+        if (v === current) renderDescription();
+      });
+    }
+
     function startPlayer() {
       show("player");
+      renderDescription();
+      renderCatalog();
+      loadVideoInfo();
       loadYouTubeApi();
       const start = Number(read("webflix-start")) || Date.now();
       const remaining = Math.max(0, PAUSE_AFTER_MS - (Date.now() - start));
